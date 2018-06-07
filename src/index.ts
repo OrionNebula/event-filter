@@ -20,18 +20,14 @@ declare module 'events' {
   }
 }
 
-EventEmitter.prototype.onWhen = function (event, predicate, listener) {
-  let th: EventEmitter = this
-  th.on(event, function () {
-    let args = Array.from(arguments)
+EventEmitter.prototype.onWhen = function (this: EventEmitter, event, predicate, listener) {
+  this.on(event, (...args: any[]) => {
     if (predicate(...args)) listener(...args)
   })
 }
 
-EventEmitter.prototype.onceWhen = function (event, predicate, listener) {
-  let th: EventEmitter = this
-  th.once(event, function () {
-    let args = Array.from(arguments)
+EventEmitter.prototype.onceWhen = function (this: EventEmitter, event, predicate, listener) {
+  this.once(event, (...args: any[]) => {
     if (predicate(...args)) listener(...args)
     else this.onceWhen(event, predicate, listener)
   })
