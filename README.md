@@ -1,5 +1,12 @@
 # event-filter
 
+[![npm](https://img.shields.io/npm/v/event-filter.svg)](https://npmjs.org/package/event-filter)
+[![npm](https://img.shields.io/npm/dm/event-filter.svg)](https://npmjs.org/package/event-filter)
+[![npm type definitions](https://img.shields.io/npm/types/event-filter.svg)](https://npmjs.org/package/event-filter)
+[![GitHub last commit](https://img.shields.io/github/last-commit/OrionNebula/event-filter.svg)](https://github.com/OrionNebula/event-filter)
+[![Build Status](https://travis-ci.org/OrionNebula/event-filter.svg?branch=master)](https://travis-ci.org/OrionNebula/event-filter)
+
+
 A package for filtering Node.js events. Your listeners only get executed when the specified predicate is satisfied.
 
 ## Usage
