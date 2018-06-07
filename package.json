@@ -1,6 +1,6 @@
 {
   "name": "event-filter",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A package for filtering Node.js events. Your listeners only get executed when the specified predicate is satisfied.",
   "main": "dist/index",
   "typing": "dist/index",
