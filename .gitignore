@@ -62,3 +62,7 @@ typings/
 
 # ignore the distribution folder
 dist/
+
+# vscode
+.vscode/*
+!.vscode/tasks.json

@@ -1,6 +1,7 @@
-import { EventEmitter } from 'events'
-import './index'
+import '.'
+
 import { expect } from 'chai'
+import { EventEmitter } from 'events'
 
 describe('onWhen', () => {
   it('should only fire when the condition is satisfied', () => {

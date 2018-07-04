@@ -8,7 +8,7 @@ declare module 'events' {
      * @param {(...any) => boolean} predicate A function which validates the event data.
      * @param {(...any) => void} listener A listener to the event.
      */
-    onWhen (event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): void
+    onWhen (event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): this
 
     /**
      * Invoke a listener the first time a certain condition is satisfied.
@@ -16,19 +16,38 @@ declare module 'events' {
      * @param {(...any) => boolean} predicate A function which validates the event data.
      * @param {(...any) => void} listener A listener to the event.
      */
-    onceWhen (event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): void
+    onceWhen (event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): this
   }
 }
 
-EventEmitter.prototype.onWhen = function (this: EventEmitter, event, predicate, listener) {
-  this.on(event, (...args: any[]) => {
-    if (predicate(...args)) listener(...args)
+EventEmitter.prototype.onWhen = function <TArgs extends any[]> (this: EventEmitter, event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void) {
+  return onWhen(this, event, predicate, listener)
+}
+
+EventEmitter.prototype.onceWhen = function <TArgs extends any[]> (this: EventEmitter, event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void) {
+  return onceWhen(this, event, predicate, listener)
+}
+
+interface EventLike {
+  on (event: string | symbol, listener: (...args: any[]) => void): this
+  removeListener (event: string | symbol, listener: (...args: any[]) => void): this
+}
+
+export function onWhen<TListener extends EventLike> (evt: TListener, event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): TListener {
+  return evt.on(event, (...args: any[]) => {
+    if (!predicate(...args)) return
+
+    listener(...args)
   })
 }
 
-EventEmitter.prototype.onceWhen = function (this: EventEmitter, event, predicate, listener) {
-  this.once(event, (...args: any[]) => {
-    if (predicate(...args)) listener(...args)
-    else this.onceWhen(event, predicate, listener)
-  })
+export function onceWhen<TListener extends EventLike> (evt: TListener, event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): TListener {
+  return evt.on(event, onceHandler)
+
+  function onceHandler (...args: any[]) {
+    if (!predicate(...args)) return
+
+    listener(...args)
+    evt.removeListener(event, onceHandler)
+  }
 }

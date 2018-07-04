@@ -24,8 +24,17 @@ event.onceWhen('someEvent', (...) => /* predicate */, (...) => /* normal listene
 
 Method Name |   Description
 ----------- |   -----------
-<code>onWhen (event: string &#124; symbol, predicate: (...args: any[]) => boolean, listener (...args: any[]) => void): void</code>      |   Subscribe to the specified event, but only call the listener when the predicate is satisfied.
-<code>onceWhen (event: string &#124; symbol, predicate: (...args: any[]) => boolean, listener (...args: any[]) => void): void</code>    |   Subscribe to the specified event, calling the listener the first time the predicate is satisfied.
+<code>onWhen (event: string &#124; symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): this</code>      |   Subscribe to the specified event, but only call the listener when the predicate is satisfied.
+<code>onceWhen (event: string &#124; symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): this</code>    |   Subscribe to the specified event, calling the listener the first time the predicate is satisfied.
+
+`event-filter` also exports the following methods:
+
+Method Name |   Description
+----------- |   -----------
+<code>onWhen&lt;TEvent extends EventLike&gt; (evt: EventLike, event: string &#124; symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): TEvent</code> | Subscribe to the specified event, but only call the listener when the predicate is satisfied.
+<code>onceWhen&lt;TEvent extends EventLike&gt; (evt: EventLike, event: string &#124; symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): TEvent</code> | Subscribe to the specified event, calling the listener the first time the predicate is satisfied.
+
+Using these allows you to call `onWhen` and `onceWhen` on objects that are like `EventEmitter`, but don't actually extend the superclass.
 
 `event-filter` contains defines TypeScript definitions for type safety.
 

@@ -1,15 +1,16 @@
 {
   "name": "event-filter",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "A package for filtering Node.js events. Your listeners only get executed when the specified predicate is satisfied.",
   "main": "dist/index",
   "typing": "dist/index",
   "scripts": {
-    "test": "mocha -r ts-node/register src/**/*.spec.ts",
-    "lint": "tslint ./src/**.ts",
-    "prebuild": "npm run lint && rimraf ./dist",
-    "build": "tsc",
-    "watch:build": "tsc --watch"
+    "test": "npm run lint && npm run build && mocha -r ts-node/register src/**/*.spec.ts",
+    "lint:fix": "tslint --fix --config tslint.json --project src",
+    "lint": "tslint --config tslint.json --project src",
+    "prebuild": "npm run lint:fix && rimraf ./dist",
+    "build": "tsc --project src",
+    "watch:build": "tsc --watch --project src"
   },
   "author": "Olivia Trewin",
   "license": "MIT",
