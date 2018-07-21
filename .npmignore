@@ -3,5 +3,3 @@
 
 # But not
 !dist/**
-# and
-!flow-typed/**

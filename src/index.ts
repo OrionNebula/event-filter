@@ -8,7 +8,7 @@ declare module 'events' {
      * @param {(...any) => boolean} predicate A function which validates the event data.
      * @param {(...any) => void} listener A listener to the event.
      */
-    onWhen (event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): this
+    onWhen <TEvent extends string | symbol, TEmitter extends EventLike<TEvent>> (this: TEmitter, event: TEvent, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): this
 
     /**
      * Invoke a listener the first time a certain condition is satisfied.
@@ -16,24 +16,24 @@ declare module 'events' {
      * @param {(...any) => boolean} predicate A function which validates the event data.
      * @param {(...any) => void} listener A listener to the event.
      */
-    onceWhen (event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): this
+    onceWhen <TEvent extends string | symbol, TEmitter extends EventLike<TEvent>> (this: TEmitter, event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): this
   }
 }
 
-EventEmitter.prototype.onWhen = function <TArgs extends any[]> (this: EventEmitter, event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void) {
+EventEmitter.prototype.onWhen = function <TEvent extends string | symbol, TEmitter extends EventLike<TEvent>> (this: TEmitter, event: TEvent, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void) {
   return onWhen(this, event, predicate, listener)
-}
+} as typeof EventEmitter.prototype.onWhen
 
-EventEmitter.prototype.onceWhen = function <TArgs extends any[]> (this: EventEmitter, event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void) {
+EventEmitter.prototype.onceWhen = function <TEvent extends string | symbol, TEmitter extends EventLike<TEvent>> (this: TEmitter, event: TEvent, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void) {
   return onceWhen(this, event, predicate, listener)
-}
+} as typeof EventEmitter.prototype.onceWhen
 
 /**
  * An object that looks like EventEmitter, but doesn't inherit from it.
  */
-interface EventLike {
-  on (event: string | symbol, listener: (...args: any[]) => void): this
-  removeListener (event: string | symbol, listener: (...args: any[]) => void): this
+interface EventLike<TEvent extends string | symbol> {
+  on (event: TEvent, listener: (...args: any[]) => void): this
+  removeListener (event: TEvent, listener: (...args: any[]) => void): this
 }
 
 /**
@@ -43,7 +43,7 @@ interface EventLike {
  * @param {(...any) => boolean} predicate A function which validates the event data.
  * @param {(...any) => void} listener A listener to the event.
  */
-export function onWhen<TListener extends EventLike> (evt: TListener, event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): TListener {
+export function onWhen<TEvent extends string | symbol, TEmitter extends EventLike<TEvent>> (evt: TEmitter, event: TEvent, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): TEmitter {
   return evt.on(event, (...args: any[]) => {
     if (!predicate(...args)) return
 
@@ -58,7 +58,7 @@ export function onWhen<TListener extends EventLike> (evt: TListener, event: stri
  * @param {(...any) => boolean} predicate A function which validates event data.
  * @param {(...any) => void} listener A listener to the event.
  */
-export function onceWhen<TListener extends EventLike> (evt: TListener, event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): TListener {
+export function onceWhen<TEvent extends string | symbol, TEmitter extends EventLike<TEvent>> (evt: TEmitter, event: TEvent, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): TEmitter {
   return evt.on(event, onceHandler)
 
   function onceHandler (...args: any[]) {

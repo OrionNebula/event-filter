@@ -6,7 +6,6 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/OrionNebula/event-filter.svg)](https://github.com/OrionNebula/event-filter)
 [![Build Status](https://travis-ci.org/OrionNebula/event-filter.svg?branch=master)](https://travis-ci.org/OrionNebula/event-filter)
 
-
 A package for filtering Node.js events. Your listeners only get executed when the specified predicate is satisfied.
 
 ## Usage
