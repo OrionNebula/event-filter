@@ -8,7 +8,7 @@ declare module 'events' {
      * @param {(...any) => boolean} predicate A function which validates the event data.
      * @param {(...any) => void} listener A listener to the event.
      */
-    onWhen (event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): this
+    onWhen<TEvent extends string | symbol, TArgs extends any[], TListener extends EventLike<TEvent, TArgs>> (this: TListener, event: TEvent, predicate: (...args: TArgs) => boolean, listener: (...args: TArgs) => void): this
 
     /**
      * Invoke a listener the first time a certain condition is satisfied.
@@ -16,24 +16,24 @@ declare module 'events' {
      * @param {(...any) => boolean} predicate A function which validates the event data.
      * @param {(...any) => void} listener A listener to the event.
      */
-    onceWhen (event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): this
+    onceWhen<TEvent extends string | symbol, TArgs extends any[], TListener extends EventLike<TEvent, TArgs>> (this: TListener, event: TEvent, predicate: (...args: TArgs) => boolean, listener: (...args: TArgs) => void): this
   }
 }
 
-EventEmitter.prototype.onWhen = function <TArgs extends any[]> (this: EventEmitter, event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void) {
+EventEmitter.prototype.onWhen = function (this: EventEmitter, event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): EventEmitter {
   return onWhen(this, event, predicate, listener)
-}
+} as typeof EventEmitter.prototype.onWhen
 
-EventEmitter.prototype.onceWhen = function <TArgs extends any[]> (this: EventEmitter, event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void) {
+EventEmitter.prototype.onceWhen = function (this: EventEmitter, event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): EventEmitter {
   return onceWhen(this, event, predicate, listener)
-}
+} as typeof EventEmitter.prototype.onceWhen
 
 /**
  * An object that looks like EventEmitter, but doesn't inherit from it.
  */
-interface EventLike {
-  on (event: string | symbol, listener: (...args: any[]) => void): this
-  removeListener (event: string | symbol, listener: (...args: any[]) => void): this
+interface EventLike<TEvent extends string | symbol, TArgs extends any[]> {
+  on (event: TEvent, listener: (...args: TArgs) => void): this
+  removeListener (event: TEvent, listener: (...args: TArgs) => void): this
 }
 
 /**
@@ -43,8 +43,8 @@ interface EventLike {
  * @param {(...any) => boolean} predicate A function which validates the event data.
  * @param {(...any) => void} listener A listener to the event.
  */
-export function onWhen<TListener extends EventLike> (evt: TListener, event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): TListener {
-  return evt.on(event, (...args: any[]) => {
+export function onWhen<TEvent extends string | symbol, TArgs extends any[], TListener extends EventLike<TEvent, TArgs>> (evt: TListener, event: TEvent, predicate: (...args: TArgs) => boolean, listener: (...args: TArgs) => void): TListener {
+  return evt.on(event, (...args: TArgs) => {
     if (!predicate(...args)) return
 
     listener(...args)
@@ -58,10 +58,10 @@ export function onWhen<TListener extends EventLike> (evt: TListener, event: stri
  * @param {(...any) => boolean} predicate A function which validates event data.
  * @param {(...any) => void} listener A listener to the event.
  */
-export function onceWhen<TListener extends EventLike> (evt: TListener, event: string | symbol, predicate: (...args: any[]) => boolean, listener: (...args: any[]) => void): TListener {
+export function onceWhen<TEvent extends string | symbol, TArgs extends any[], TListener extends EventLike<TEvent, TArgs>> (evt: TListener, event: TEvent, predicate: (...args: TArgs) => boolean, listener: (...args: TArgs) => void): TListener {
   return evt.on(event, onceHandler)
 
-  function onceHandler (...args: any[]) {
+  function onceHandler (...args: TArgs) {
     if (!predicate(...args)) return
 
     listener(...args)
