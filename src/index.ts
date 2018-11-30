@@ -64,7 +64,10 @@ export function onceWhen<TEvent extends string | symbol, TArgs extends any[], TL
   function onceHandler (...args: TArgs) {
     if (!predicate(...args)) return
 
-    listener(...args)
-    evt.removeListener(event, onceHandler)
+    try {
+      listener(...args)
+    } finally {
+      evt.removeListener(event, onceHandler)
+    }
   }
 }

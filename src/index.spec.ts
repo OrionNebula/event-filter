@@ -18,12 +18,7 @@ describe('onWhen', () => {
   })
 
   it('should also succeed on EventLike objects', () => {
-    const emitter: {
-      on (event: 'test', listener: (data: boolean) => void): typeof emitter
-      removeListener (event: 'test', listener: (data: boolean) => void): typeof emitter
-      emit (event: 'test', data: boolean): boolean
-      removeAllListeners (): void
-    } = new EventEmitter()
+    const emitter: TestEmitter = new EventEmitter()
     let hitCount = 0
     onWhen(emitter, 'test', (data: boolean) => data, () => {
       hitCount++
@@ -51,12 +46,7 @@ describe('onceWhen', () => {
   })
 
   it('should also succeed on EventLike objects', () => {
-    const emitter: {
-      on (event: 'test', listener: (data: boolean) => void): typeof emitter
-      removeListener (event: 'test', listener: (data: boolean) => void): typeof emitter
-      emit (event: 'test', data: boolean): boolean
-      removeAllListeners (): void
-    } = new EventEmitter()
+    const emitter: TestEmitter = new EventEmitter()
     let hitCount = 0
     onceWhen(emitter, 'test', (data: boolean) => data, () => {
       hitCount++
@@ -68,3 +58,10 @@ describe('onceWhen', () => {
     expect(hitCount).to.equal(1)
   })
 })
+
+interface TestEmitter {
+  on (event: 'test', listener: (data: boolean) => void): this
+  removeListener (event: 'test', listener: (data: boolean) => void): this
+  emit (event: 'test', data: boolean): boolean
+  removeAllListeners (event?: 'test'): void
+}
